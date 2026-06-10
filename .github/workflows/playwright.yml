@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   test-cloud:
-    name: Run Tests (Local Chromium)
+    name: Run Tests (LambdaTest Cloud)
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -43,9 +43,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright Browsers
-        run: npx playwright install chromium --with-deps
 
       - name: Run Tests on LambdaTest
         run: npm run test:lt
@@ -71,6 +68,4 @@ jobs:
         with:
           name: test-results-${{ github.run_number }}
           path: test-results
-          retention-days: 7
-
-  
+          retention-days: 7 
