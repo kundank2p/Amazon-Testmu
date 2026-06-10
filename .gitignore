@@ -7,4 +7,3 @@ test-results/
 coverage/
 .vscode/
 .DS_Store
-package-lock.json
