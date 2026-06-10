@@ -6,10 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Explicitly point to the .env file
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-// Clean string formatting to remove any accidental spaces/newlines from the env file
 const username = process.env.LT_USERNAME?.trim();
 const accessKey = process.env.LT_ACCESS_KEY?.trim();
 
@@ -43,7 +41,7 @@ const wsEndpoint =
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: false, // Forces predictable sequential execution during debugging
+  fullyParallel: false, 
   workers: 1, 
   retries: 0,
   timeout: 60000, 
@@ -55,7 +53,6 @@ export default defineConfig({
     screenshot: 'on',
     video: 'on',
     trace: 'on',
-    // Hard connection timeout: abort if cloud connection takes more than 20 seconds
     connectOptions: { 
       wsEndpoint,
       timeout: 120000 

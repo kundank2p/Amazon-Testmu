@@ -14,11 +14,9 @@ export default class SearchResultsPage extends BasePage {
     }
 
     async openFirstProduct() {
-        await expect(this.productLinks.first()).toBeVisible({
-            timeout: 30000,
-        });
-        await this.productLinks.first().click();
-        await this.waitForDomLoaded();
+        const product = this.productLinks.first();
+        await expect(product).toBeVisible();
+        await Promise.all([this.page.waitForLoadState('domcontentloaded'), product.click()]);
     }
 
     async searchAndValidate() {

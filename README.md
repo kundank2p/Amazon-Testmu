@@ -2,17 +2,17 @@
 
 ## Overview
 
-This project is an automated testing framework developed using **Playwright with JavaScript** to automate Amazon shopping workflows.
+This project is an automated testing framework built using **Playwright with JavaScript** to automate Amazon shopping workflows.
 
-The framework was built as part of an Automation Engineering Assessment and demonstrates:
+The framework was developed as part of an Automation Engineering Assessment and demonstrates:
 
-* End-to-end UI automation
-* Page Object Model (POM) design pattern
-* Parallel test execution
-* Environment configuration using dotenv
-* CI/CD integration with GitHub Actions
-* LambdaTest Cloud execution
-* Reporting, screenshots, videos, and traces
+* End-to-End UI Automation
+* Page Object Model (POM) Design Pattern
+* Parallel Test Execution
+* Environment Configuration using dotenv
+* GitHub Actions CI/CD Integration
+* LambdaTest Cloud Execution
+* HTML Reporting, Screenshots, Videos, and Traces
 
 ---
 
@@ -22,17 +22,17 @@ The framework was built as part of an Automation Engineering Assessment and demo
 
 1. Navigate to Amazon India
 2. Search for an iPhone device
-3. Select a product from search results
-4. Add the product to cart
-5. Retrieve and print the product price
+3. Retrieve and print the product price
+4. Open the product details page
+5. Validate successful navigation
 
 ### Test Case 2
 
 1. Navigate to Amazon India
-2. Search for a Galaxy device
-3. Select a product from search results
-4. Add the product to cart
-5. Retrieve and print the product price
+2. Search for a Samsung Galaxy device
+3. Retrieve and print the product price
+4. Open the product details page
+5. Validate successful navigation
 
 ---
 
@@ -41,12 +41,13 @@ The framework was built as part of an Automation Engineering Assessment and demo
 | Component            | Technology              |
 | -------------------- | ----------------------- |
 | Language             | JavaScript              |
-| Automation Framework | Playwright              |
+| Automation Framework | Playwright 1.55.0       |
 | Design Pattern       | Page Object Model (POM) |
 | Test Runner          | Playwright Test         |
 | Reporting            | HTML Report             |
 | CI/CD                | GitHub Actions          |
 | Cloud Execution      | LambdaTest              |
+| Configuration        | dotenv                  |
 
 ---
 
@@ -97,15 +98,24 @@ The framework follows the Page Object Model design pattern to:
 
 ### Parallel Execution
 
-Playwright executes the test scenarios in parallel to improve execution speed and validate concurrent execution capabilities.
+The framework is configured to execute test cases in parallel.
+
+Configuration:
+
+```javascript
+fullyParallel: true,
+workers: 2
+```
+
+This allows both Amazon search scenarios to execute concurrently.
 
 ### Logging
 
-Custom logging utility is implemented to provide readable execution logs.
+A reusable logging utility is implemented to provide readable execution logs.
 
 ### Reporting
 
-The framework generates:
+The framework automatically generates:
 
 * HTML Reports
 * Screenshots on Failure
@@ -114,27 +124,29 @@ The framework generates:
 
 ---
 
-## Local Setup
-
-### Prerequisites
+## Prerequisites
 
 * Node.js 18+
 * npm
 
-### Clone Repository
+---
+
+## Installation
+
+Clone the repository:
 
 ```bash
 git clone <repository-url>
 cd playwright-project
 ```
 
-### Install Dependencies
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-### Install Playwright Browsers
+Install Playwright browsers:
 
 ```bash
 npx playwright install
@@ -144,7 +156,7 @@ npx playwright install
 
 ## Environment Configuration
 
-Create a `.env` file from `.env.example`.
+Create a `.env` file using `.env.example`.
 
 Example:
 
@@ -161,45 +173,41 @@ USE_LAMBDATEST=true
 
 ---
 
-## Running Tests Locally
+## Execution Commands
 
-Execute all tests:
+### Run Tests Locally
 
 ```bash
-npx playwright test
+npm test
 ```
 
-Run in headed mode:
+### Run in Headed Mode
 
 ```bash
-npx playwright test --headed
+npm run test:headed
 ```
 
-Run a specific test:
+### Run on LambdaTest
 
 ```bash
-npx playwright test tests/amazon.spec.js
+npm run test:lt
 ```
 
----
-
-## Viewing Reports
-
-Generate and open report:
+### Open HTML Report
 
 ```bash
-npx playwright show-report
+npm run report
 ```
 
 ---
 
 ## LambdaTest Integration
 
-The framework supports execution on LambdaTest Cloud.
+This framework supports execution on LambdaTest Cloud using Playwright CDP connections.
 
-### Configure Credentials
+### Required Configuration
 
-Add credentials to the `.env` file:
+Add the following credentials:
 
 ```env
 LT_USERNAME=your_username
@@ -209,33 +217,34 @@ LT_ACCESS_KEY=your_access_key
 ### Execute on LambdaTest
 
 ```bash
-npx playwright test --config=playwright.lt.config.js
+npm run test:lt
 ```
 
 ---
 
 ## GitHub Actions CI/CD
 
-The framework includes GitHub Actions integration.
+The project includes a GitHub Actions workflow for automated execution.
 
-Pipeline capabilities:
+Pipeline Features:
 
-* Install dependencies
-* Install Playwright browsers
-* Execute tests
-* Publish reports
-* Execute tests on LambdaTest Cloud
+* Install Dependencies
+* Install Playwright Browsers
+* Execute Playwright Tests
+* Publish HTML Reports
+* Execute Tests on LambdaTest Cloud
+* Store Test Artifacts
 
-### Required GitHub Secrets
+### Repository Secrets
 
-Configure the following repository secrets:
+Configure the following secrets:
 
 ```text
 LT_USERNAME
 LT_ACCESS_KEY
 ```
 
-### Required Repository Variable
+### Repository Variables
 
 ```text
 LT_ENABLED=true
@@ -243,24 +252,35 @@ LT_ENABLED=true
 
 ---
 
+## Assumptions
+
+* Amazon UI may vary based on region and time.
+* Product availability and pricing are dynamic.
+* Tests are executed against Amazon India (amazon.in).
+* LambdaTest credentials are supplied via environment variables or GitHub Secrets.
+* Browser execution is supported locally and on LambdaTest Cloud.
+
+---
+
 ## Design Considerations
 
-* Reusable Page Objects
+* Page Object Model Architecture
+* Reusable Components
 * Externalized Test Data
-* Environment-Based Configuration
 * Cloud Execution Support
-* CI/CD Ready Architecture
-* Clean and Maintainable Code Structure
+* CI/CD Ready Framework
+* Maintainable and Scalable Structure
+* Environment-Based Configuration
 
 ---
 
 ## Author
 
-Kundan Prasad
+**Kundan Prasad**
 
 Software Development Engineer in Test (SDET)
 
-Specializations:
+Skills:
 
 * Playwright
 * Selenium
@@ -269,3 +289,4 @@ Specializations:
 * Java
 * CI/CD
 * Test Framework Design
+
