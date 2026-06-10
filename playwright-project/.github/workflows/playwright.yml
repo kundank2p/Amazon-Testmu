@@ -1,0 +1,112 @@
+# .github/workflows/playwright.yml
+# ─────────────────────────────────────────────────────────────
+# GitHub Actions CI pipeline for Amazon Playwright Automation.
+#
+# Triggers:
+#   • Every push to main / master
+#   • Every pull request targeting main / master
+#   • Manual trigger via GitHub UI (workflow_dispatch)
+#
+# Jobs:
+#   1. test-local    → runs TC01 + TC02 in parallel on GitHub runner
+#   2. test-cloud    → runs TC01 + TC02 on LambdaTest (requires secrets)
+# ─────────────────────────────────────────────────────────────
+
+name: Playwright Automation — Amazon Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:          
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-local:
+    name: Run Tests (Local Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Local Tests
+        run: npx playwright test
+        env:
+          BASE_URL: https://www.amazon.in
+          HEADLESS: true
+          CI: true
+
+      - name: Upload Local Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: playwright-report
+          retention-days: 14
+
+      - name: Upload Failure Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.run_number }}
+          path: test-results
+          retention-days: 7
+
+  test-cloud:
+    name: Run Tests (LambdaTest Cloud)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    if: >
+      github.event_name != 'pull_request' &&
+      vars.LT_ENABLED == 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Tests on LambdaTest
+        run: npx playwright test --config=playwright.lt.config.js
+        env:
+          BASE_URL: https://www.amazon.in
+          HEADLESS: true
+          LT_USERNAME: ${{ secrets.LT_USERNAME }}
+          LT_ACCESS_KEY: ${{ secrets.LT_ACCESS_KEY }}
+          LT_BUILD_NAME: GH Actions Build #${{ github.run_number }}
+          USE_LAMBDATEST: true
+          CI: true
+
+      - name: Upload LambdaTest Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lt-report-${{ github.run_number }}
+          path: reports/lt-report
+          retention-days: 14
